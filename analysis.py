@@ -18,7 +18,7 @@ def readdata():
     #Removing any NaN or NaT times
     df = df.dropna(subset=[datec, AQI])
 
-    #Creating a new series with only the year values from the datec column
+    #Creating a new column with only the year values from the datec column
     df["year"]=df[datec].dt.year
     return df
 
@@ -40,7 +40,7 @@ def descriptivestatistics(df):
 #This function is used to sort the average AQI on a daily basis, removing time 
 def fdaily(df):
     daily=df.copy()
-    #Extracting the date and creating a new series to store the same
+    #Extracting the date and creating a new column to store the same
     daily["date"]=daily[datec].dt.normalize()
     #Grouping the rows based on date and calculating the mean AQI
     #Reset index is done to counteract the leftward shift of the columns
@@ -121,7 +121,7 @@ def yearlybar(df):
     #Calling the fdaily function to create a copy of the dataframe
     daily=fdaily(df)
 
-    #Extracting the year and creating a new series to store the same
+    #Extracting the year and creating a new column to store the same
     daily["year"]=daily["date"].dt.year
     #Grouping the rows based on year and calculating the mean AQI
     #Reset index is done to counteract the leftward shift of the columns
