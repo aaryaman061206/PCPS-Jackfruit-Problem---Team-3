@@ -17,9 +17,6 @@ def readdata():
     df[datec] = pd.to_datetime(df[datec], errors="coerce")
     #Removing any NaN or NaT times
     df = df.dropna(subset=[datec, AQI])
-
-    #Creating a new column with only the year values from the datec column
-    df["year"]=df[datec].dt.year
     return df
 
 #Function to calculate the descriptive statistics based on the daily AQI
@@ -102,14 +99,10 @@ def dailyline(df):
     #Inputting specifications about the  trendline
     plt.plot(daily["date"], daily[AQI], marker="*", linestyle="-", label="Daily AQI")
     #Inputting specifications about the reference lines
-    for val,col,des in [
-        (50, "green", "Good"),
-        (100, "yellow", "Satisfactory"),
-        (200, "orange", "Moderate"),
-        (300, "red", "Poor"),
-    ]:
+    lines=[(50, "green", "Good"),(100, "yellow", "Satisfactory"),(200, "orange", "Moderate"),(300, "red", "Poor")]
+    for val,col,cat in lines:
         #Plotting straight lines at these reference points
-        plt.axhline(val, color=col, linestyle="-", label=des)
+        plt.axhline(val, color=col, linestyle="-", label=cat)
     plt.xlabel("Date")
     plt.ylabel("AQI")
     plt.title("Daily AQI in Delhi (2000–2024)")
@@ -119,13 +112,13 @@ def dailyline(df):
 #Function to plot the yearly mean AQI in the form of a bar chart
 def yearlybar(df):
     #Calling the fdaily function to create a copy of the dataframe
-    daily=fdaily(df)
+    yearly=fdaily(df)
 
     #Extracting the year and creating a new column to store the same
-    daily["year"]=daily["date"].dt.year
+    yearly["year"]=yearly["date"].dt.year
     #Grouping the rows based on year and calculating the mean AQI
     #Reset index is done to counteract the leftward shift of the columns
-    yearly=daily.groupby("year")[AQI].mean().reset_index()
+    yearly=yearly.groupby("year")[AQI].mean().reset_index()
     
     plt.figure(figsize=(12, 6))
     plt.bar(yearly["year"],yearly[AQI])
